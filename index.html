@@ -472,8 +472,17 @@ try { entradas = JSON.parse(localStorage.getItem("diario_karime") || "[]"); } ca
 let emocionSel = null;
 
 function getIdx() {
-  const h = new Date();
-  return (h.getDate() + h.getMonth() * 31) % 30;
+  // Día personal: se guarda la fecha de inicio la primera vez
+  let inicio = localStorage.getItem("diario_inicio");
+  if (!inicio) {
+    inicio = new Date().toISOString().split("T")[0];
+    localStorage.setItem("diario_inicio", inicio);
+  }
+  const fechaInicio = new Date(inicio);
+  const hoy = new Date();
+  const diffMs = hoy - fechaInicio;
+  const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  return diffDias % 30;
 }
 function getPregunta() { return PREGUNTAS[getIdx()]; }
 function getDia() { return DIAS[getIdx()]; }
